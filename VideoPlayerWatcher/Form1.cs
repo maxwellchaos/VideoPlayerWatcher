@@ -130,10 +130,6 @@ namespace VideoPlayerWatcher
             pictureBox1.Invalidate();
         }
 
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void pictureBox1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
@@ -200,7 +196,7 @@ namespace VideoPlayerWatcher
         }
         void SaveValues()
         {
-            if (!BlockSave)
+            if (!BlockSave && !MouseDowned)
             {
                 Properties.Settings.Default.Timeout = (int)numericUpDown1.Value;
                 Properties.Settings.Default.HorizontalFrom = (int)HorizontalFrom.Value;

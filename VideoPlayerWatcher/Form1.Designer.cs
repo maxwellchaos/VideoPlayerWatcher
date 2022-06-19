@@ -147,7 +147,6 @@
             this.label5.Size = new System.Drawing.Size(72, 13);
             this.label5.TabIndex = 1;
             this.label5.Text = "Горизонталь";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // VerticalFrom
             // 
