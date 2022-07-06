@@ -30,6 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.ComputerIdTextBox4 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.ComputerNameTextBox3 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.ServerAdressTextBox2 = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.VerticalTo = new System.Windows.Forms.NumericUpDown();
@@ -58,6 +64,12 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label10);
+            this.panel1.Controls.Add(this.ComputerIdTextBox4);
+            this.panel1.Controls.Add(this.label9);
+            this.panel1.Controls.Add(this.ComputerNameTextBox3);
+            this.panel1.Controls.Add(this.label8);
+            this.panel1.Controls.Add(this.ServerAdressTextBox2);
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.textBox1);
@@ -69,6 +81,56 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(827, 152);
             this.panel1.TabIndex = 2;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(280, 98);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(115, 13);
+            this.label10.TabIndex = 17;
+            this.label10.Text = "ID этого компьютера";
+            // 
+            // ComputerIdTextBox4
+            // 
+            this.ComputerIdTextBox4.Location = new System.Drawing.Point(283, 114);
+            this.ComputerIdTextBox4.Name = "ComputerIdTextBox4";
+            this.ComputerIdTextBox4.ReadOnly = true;
+            this.ComputerIdTextBox4.Size = new System.Drawing.Size(251, 20);
+            this.ComputerIdTextBox4.TabIndex = 16;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(280, 56);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(126, 13);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "Имя этого компьютера";
+            // 
+            // ComputerNameTextBox3
+            // 
+            this.ComputerNameTextBox3.Location = new System.Drawing.Point(283, 72);
+            this.ComputerNameTextBox3.Name = "ComputerNameTextBox3";
+            this.ComputerNameTextBox3.Size = new System.Drawing.Size(251, 20);
+            this.ComputerNameTextBox3.TabIndex = 14;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(280, 20);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(83, 13);
+            this.label8.TabIndex = 13;
+            this.label8.Text = "Адрес сервера";
+            // 
+            // ServerAdressTextBox2
+            // 
+            this.ServerAdressTextBox2.Location = new System.Drawing.Point(283, 36);
+            this.ServerAdressTextBox2.Name = "ServerAdressTextBox2";
+            this.ServerAdressTextBox2.Size = new System.Drawing.Size(251, 20);
+            this.ServerAdressTextBox2.TabIndex = 12;
+            this.ServerAdressTextBox2.Text = "https://localhost:7187";
             // 
             // groupBox1
             // 
@@ -229,6 +291,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(827, 301);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
@@ -236,7 +299,6 @@
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
@@ -282,6 +344,12 @@
         private System.Windows.Forms.NumericUpDown VerticalFrom;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox ComputerIdTextBox4;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox ComputerNameTextBox3;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox ServerAdressTextBox2;
     }
 }
 

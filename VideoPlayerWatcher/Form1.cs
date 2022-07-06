@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Management;
+using VideoScreensWatcher.Messages;
+using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace VideoPlayerWatcher
 {
     public partial class Form1 : Form
     {
+        int XShift = 100;
+
         //Скриншоты
         Bitmap ScreenShot;
         Bitmap PrevScreenShot;
@@ -85,18 +92,22 @@ namespace VideoPlayerWatcher
         //показать скриншот виртуального экрана
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
+           
             if (ScreenShot != null)
             {
                 //Вычислить оптимальные размеры
                 float horizontal = ScreenShot.Width / pictureBox1.Width;
                 float vertical = ScreenShot.Height / pictureBox1.Height;
-                scale = (int)Math.Max(horizontal, vertical)+1;
+                scale = (int)Math.Max(horizontal, vertical) + 1;
 
                 //Нарисовать уменьшенный скриншот и рамку выделения
-                e.Graphics.DrawImage(ScreenShot, 0, 0, ScreenShot.Width / scale, ScreenShot.Height / scale);
+                e.Graphics.DrawImage(ScreenShot, 0 + XShift, 0, ScreenShot.Width / scale, ScreenShot.Height / scale);
                 e.Graphics.DrawRectangle(Pens.Black,
-                    (int)HorizontalFrom.Value/scale, (int)VerticalFrom.Value / scale, 
-                    (int)(HorizontalTo.Value-HorizontalFrom.Value) / scale, (int)(VerticalTo.Value-VerticalFrom.Value) / scale);
+                    (int)HorizontalFrom.Value / scale + XShift, (int)VerticalFrom.Value / scale,
+                    (int)(HorizontalTo.Value - HorizontalFrom.Value) / scale, (int)(VerticalTo.Value - VerticalFrom.Value) / scale);
+                e.Graphics.DrawRectangle(Pens.White,
+                    (int)HorizontalFrom.Value / scale + 1 + XShift, (int)VerticalFrom.Value / scale + 1,
+                    (int)(HorizontalTo.Value - HorizontalFrom.Value) / scale - 2, (int)(VerticalTo.Value - VerticalFrom.Value) / scale - 2);
             }
         }
 
@@ -111,6 +122,12 @@ namespace VideoPlayerWatcher
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            string serverAdress = ServerAdressTextBox2.Text;
+
+            var message = new ComputerWork();
+            message.ComputerId = ComputerIdTextBox4.Text;
+            message.ComputerName = ComputerNameTextBox3.Text;
+            message.Timeout = (int)numericUpDown1.Value;
             //Сделать скриншот
             MakeScreenshot();
 
@@ -119,12 +136,20 @@ namespace VideoPlayerWatcher
             {
                 textBox1.AppendText(DateTime.Now.TimeOfDay.ToString() + " Видео идет\r\n");
                 label3.Text = "Видео идет";
+                message.IsRunning = true;
             }
             else
             {
                 textBox1.AppendText(DateTime.Now.TimeOfDay.ToString() + " Видео остановлено\r\n");
                 label3.Text = "Видео остановлено";
+                message.IsRunning = false;
             }
+
+            //Собрать сообщение
+            string jsonMessage = JsonConvert.SerializeObject(message);
+            //Послать сообщение
+            var stringContent = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
+            var response = new HttpClient().PostAsync(serverAdress+ @"/api/FromDesktop", stringContent);
 
             //Перерисовать скриншот
             pictureBox1.Invalidate();
@@ -136,7 +161,7 @@ namespace VideoPlayerWatcher
             try
             {
                 //Задаю начальные значения
-                StartSelectionX = e.X;
+                StartSelectionX = e.X-XShift;
                 StartSelectionY = e.Y;
                 VerticalFrom.Value = e.Y * scale;
                 HorizontalFrom.Value = e.X * scale;
@@ -177,14 +202,14 @@ namespace VideoPlayerWatcher
                     VerticalFrom.Value = e.Y * scale;
                     VerticalTo.Value = StartSelectionY * scale; 
                 }
-                if (e.X > StartSelectionX)
+                if (e.X - XShift > StartSelectionX)
                 {
                     HorizontalFrom.Value = StartSelectionX * scale;
-                    HorizontalTo.Value = e.X * scale;
+                    HorizontalTo.Value = (e.X - XShift) * scale;
                 }
                 else
                 {
-                    HorizontalFrom.Value = e.X * scale;
+                    HorizontalFrom.Value = (e.X - XShift) * scale;
                     HorizontalTo.Value = StartSelectionX * scale;
                 }
             }
@@ -231,17 +256,49 @@ namespace VideoPlayerWatcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Запрет на сохранение
+            BlockSave = true;
+            
+            //Подгрузить все настройки
             LoadValues();
             //Пусть таймер сразу тикнет
             timer1_Tick(sender, e);
 
             //Пусть теперь можно сохранять
             BlockSave = false;
+
+            //Получить ID оборудования
+            //Процессор
+            ManagementObjectSearcher mbs = new ManagementObjectSearcher("Select * From Win32_processor");
+            ManagementObjectCollection mbsList = mbs.Get();
+            string id = "";
+            foreach (ManagementObject mo in mbsList)
+            {
+                id = mo["ProcessorID"].ToString();
+            }
+            //Жесткий диск
+            ManagementObject dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""c:""");
+            dsk.Get();
+            id += dsk["VolumeSerialNumber"].ToString();
+            ComputerIdTextBox4.Text = id;
+
+
+            timer1.Enabled = true;
         }
 
         private void HorizontalTo_ValueChanged(object sender, EventArgs e)
         {
             SaveValues();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            timer1_Tick(sender, e);
         }
     }
 }
