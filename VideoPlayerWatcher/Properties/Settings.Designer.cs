@@ -82,5 +82,29 @@ namespace VideoPlayerWatcher.Properties {
                 this["HorizontalTo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ServiceAdress {
+            get {
+                return ((string)(this["ServiceAdress"]));
+            }
+            set {
+                this["ServiceAdress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ThisComputerName {
+            get {
+                return ((string)(this["ThisComputerName"]));
+            }
+            set {
+                this["ThisComputerName"] = value;
+            }
+        }
     }
 }

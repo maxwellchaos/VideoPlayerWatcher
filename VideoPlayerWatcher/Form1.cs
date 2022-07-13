@@ -123,7 +123,7 @@ namespace VideoPlayerWatcher
         private void timer1_Tick(object sender, EventArgs e)
         {
             string serverAdress = ServerAdressTextBox2.Text;
-
+            label8.Text = "Адрес сервера ";
             var message = new ComputerWork();
             message.ComputerId = ComputerIdTextBox4.Text;
             message.ComputerName = ComputerNameTextBox3.Text;
@@ -144,13 +144,18 @@ namespace VideoPlayerWatcher
                 label3.Text = "Видео остановлено";
                 message.IsRunning = false;
             }
-
-            //Собрать сообщение
-            string jsonMessage = JsonConvert.SerializeObject(message);
-            //Послать сообщение
-            var stringContent = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
-            var response = new HttpClient().PostAsync(serverAdress+ @"/api/FromDesktop", stringContent);
-
+            try
+            {
+                //Собрать сообщение
+                string jsonMessage = JsonConvert.SerializeObject(message);
+                //Послать сообщение
+                var stringContent = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
+                var response = new HttpClient().PostAsync(serverAdress + @"/api/FromDesktop", stringContent);
+            }
+            catch (Exception ex)
+            {
+                label8.Text = "Адрес сервера " + ex.Message;
+            }
             //Перерисовать скриншот
             pictureBox1.Invalidate();
         }
@@ -187,9 +192,7 @@ namespace VideoPlayerWatcher
             //Еси не идет выделение, но ничего не делаем
             if (!MouseDowned)
                 return;
-            //if (Mouse.LeftButton == MouseButtonState.Released)
-            //    return;
-
+           
             try
             {
                 if(e.Y>StartSelectionY)
@@ -228,6 +231,8 @@ namespace VideoPlayerWatcher
                 Properties.Settings.Default.HorizontalTo = (int)HorizontalTo.Value;
                 Properties.Settings.Default.VerticalFrom = (int)VerticalFrom.Value;
                 Properties.Settings.Default.VerticalTo = (int)VerticalTo.Value;
+                Properties.Settings.Default.ServiceAdress = ServerAdressTextBox2.Text;
+                Properties.Settings.Default.ThisComputerName = ComputerNameTextBox3.Text;
                 Properties.Settings.Default.Save();
             }
         }
@@ -247,6 +252,9 @@ namespace VideoPlayerWatcher
 
                 VerticalTo.Maximum = Properties.Settings.Default.VerticalTo;
                 VerticalTo.Value = Properties.Settings.Default.VerticalTo;
+
+                ServerAdressTextBox2.Text = Properties.Settings.Default.ServiceAdress;
+                ComputerNameTextBox3.Text = Properties.Settings.Default.ThisComputerName;            
             }
             catch(Exception)
             {
